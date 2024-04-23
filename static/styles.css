@@ -76,6 +76,7 @@ section{
     max-width: 500px;
     padding: 20px;
     background-color: white;
+    margin-top: 50px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
