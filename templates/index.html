@@ -89,28 +89,46 @@
         });
         </script>
         
-        <script>
-          document.getElementById('saveButton').addEventListener('click', function(event) {
-              event.preventDefault();
-              var storyTheme = document.querySelector('input[name="storyTheme"]:checked').value;
-              var storyStart = document.getElementById('storyStart').value;
-      
-              fetch('/', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({storyTheme: storyTheme, storyStart: storyStart})
-              })
-              .then(response => response.json())
-              .then(data => {
-                  alert("Generated Story: " + data.story); // Optionally, update the DOM to display the story
-              })
-              .catch((error) => {
-                  console.error('Error:', error);
-              });
-          });
-      </script>      
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="storyTheme" id="adventure" value="Adventure">
+      <label class="form-check-label" for="adventure">Adventure</label>
+    </div>
+    
+    <script>
+        document.getElementById('saveButton').addEventListener('click', function(event) {
+            event.preventDefault();
+            var storyTheme = document.querySelector('input[name="storyTheme"]:checked').value;
+            var storyStart = document.getElementById('storyStart').value;
+    
+            if (!storyTheme || !storyStart) {
+                alert('Please fill in all fields');
+                return;
+            }
+    
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({storyTheme: storyTheme, storyStart: storyStart})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.error) {
+                    alert("Error: " + data.error);
+                } else {
+                    alert("Generated Story: " + data.story);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/particles.js"></script>
+    <script src="/static/app.js"></script>
+    
         
 </body>
 </html>
