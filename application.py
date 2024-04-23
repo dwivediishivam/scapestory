@@ -1,37 +1,41 @@
 from flask import Flask, render_template, request, jsonify
+import openai
+import os
 
 app = Flask(__name__)
 
 device = 'cpu'
 
+
+model_mapping = {
+    'adventure': 'ft:gpt-3.5-turbo-0125:the-dot-store:adv3:9HEuqfo9',
+    'horror': 'horror-model-name',
+    'sci-fi': 'sci-fi-model-name'
+}
+openai.api_key = os.getenv('OPENAI_API_KEY')
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
         data = request.get_json()
-        prompt = data.get("storyStart")
-        theme = data.get("storyTheme").lower()
-        # model = None
-        # tokenizer = None
+        prompt = data.get("storyStart", "")
+        theme = data.get("storyTheme", "").lower()
 
-        # # Dynamically load the model and tokenizer based on the selected theme
-        # model_path = f"/path/to/{theme}_story_model"
-        # model = transformers.AutoModelForCausalLM.from_pretrained(model_path)
-        # tokenizer = transformers.AutoTokenizer.from_pretrained(model_path)
+        model_name = model_mapping.get(theme, 'gpt-3.5-turbo-0125')
 
-        # # Create a text input for the model
-        # prompt_text = f"Generate a {theme} story given the beginning of the story: {prompt}"
-        # inputs = tokenizer(prompt_text, return_tensors="pt", add_special_tokens=True).to(device)
-
-        # # Generate the story
-        # outputs = model.generate(**inputs, max_new_tokens=500, do_sample=True, pad_token_id=tokenizer.eos_token_id)
-        # story = tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-        story = prompt + theme
+        try:
+            response = openai.Completion.create(
+                model=model_name,
+                prompt=prompt,
+                max_tokens=150,
+                temperature=0.7
+            )
+            story = response.choices[0].text.strip()
+        except Exception as e:
+            return jsonify(error=str(e)), 500
         
-        # Return the generated story
         return jsonify(story=story)
 
-    # Serve the single page on GET request
     return render_template('index.html')
 
 if __name__ == '__main__':
