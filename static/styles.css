@@ -85,7 +85,7 @@ section{
     position: inherit;
     width: 100%;
     height: auto;
-    overflow: auto;
+    overflow: scroll;
     opacity: 0;
     margin-top: 5px;
     transition: opacity 1s ease-in-out, height 1s ease-in-out;
