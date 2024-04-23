@@ -1,6 +1,4 @@
-from flask import Flask, render_template, request, jsonify
-import torch
-import transformers
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
