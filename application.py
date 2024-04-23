@@ -6,11 +6,10 @@ app = Flask(__name__)
 
 device = 'cpu'
 
-
 model_mapping = {
-    'adventure': 'ft:gpt-3.5-turbo-0125:the-dot-store:adv3:9HEuqfo9',
-    'horror': 'horror-model-name',
-    'sci-fi': 'sci-fi-model-name'
+    'adventure': 'adventure',
+    'horror': 'horror',
+    'science fiction': 'science fiction'
 }
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
@@ -21,20 +20,19 @@ def home():
         prompt = data.get("storyStart", "")
         theme = data.get("storyTheme", "").lower()
 
-        model_name = model_mapping.get(theme, 'gpt-3.5-turbo-0125')
+        model_name = "ft:gpt-3.5-turbo-0125:the-dot-store:adv3:9HEuqfo9"
 
-        try:
-            response = openai.Completion.create(
-                model=model_name,
-                prompt=prompt,
-                max_tokens=150,
-                temperature=0.7
-            )
-            story = response.choices[0].text.strip()
-        except Exception as e:
-            return jsonify(error=str(e)), 500
-        
+        story = "ir"
+        response = openai.ChatCompletion.create(
+            model=model_name,
+            messages=[{"role": "system", "content": "Generate a story continuation in the theme" + model_mapping[theme] + "after this line - "},
+                        {"role": "user", "content": prompt}],
+            temperature=0.7
+        )
+        story = response['choices'][0]['message']['content']
+
         return jsonify(story=story)
+
 
     return render_template('index.html')
 
