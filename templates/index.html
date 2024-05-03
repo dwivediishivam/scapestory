@@ -12,6 +12,7 @@
 </head>
 <body>
     <div id="particles-js"></div>
+    <div class="loader" id="loader"></div>
 
         <header>
             <nav>
@@ -118,6 +119,9 @@
     event.preventDefault();
     var storyTheme = document.querySelector('input[name="storyTheme"]:checked').value;
     var storyStart = document.getElementById('storyStart').value;
+    const loader = document.getElementById('loader');
+
+    loader.style.display = 'block';
 
     fetch('/', {
         method: 'POST',
@@ -128,6 +132,7 @@
     })
     .then(response => response.json())
     .then(data => {
+        loader.style.display = 'none';
         // Update the DOM to display the story
         var storyOutput = document.getElementById('storyOutput');
         storyOutput.innerText = "Generated Story: " + data.story;
@@ -138,6 +143,7 @@
     })
     .catch((error) => {
         console.error('Error:', error);
+        loader.style.display = 'none';
     });
 });
 
